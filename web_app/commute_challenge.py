@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from geofence import point_is_inside_geofence
@@ -6,12 +5,12 @@ from web_requests_utils import send_get_request_with_bearer_auth
 
 
 class CommuteChallenge:
-    workplace_coordinates: tuple
+    place_coordinates: tuple
     tolerance_radius: int
 
-    def __init__(self):
-        self.workplace_coordinates = (54.380798, 18.484270)
-        self.tolerance_radius = 300
+    def __init__(self,place_coordinates,tolerance_radius):
+        self.place_coordinates = place_coordinates
+        self.tolerance_radius = tolerance_radius
 
     @staticmethod
     def get_activities_url(**kwargs) -> str:
@@ -39,10 +38,10 @@ class CommuteChallenge:
         # start_date = datetime(2024, 3, 1).timestamp()
         # finish_date = datetime(2024, 6, 30).timestamp()
         # TODO: Remove debug dates
-        start_date = datetime(2023, 5, 29).timestamp()
-        finish_date = datetime(2023, 5, 31).timestamp()
+        # start_date = datetime(2024, 3, 1).timestamp()
+        # finish_date = datetime(2024, 6, 1).timestamp()
 
-        url = self.get_activities_url(before=finish_date, after=start_date, per_page=200, **kwargs)
+        url = self.get_activities_url(per_page=200, **kwargs)
         return send_get_request_with_bearer_auth(url, strava_access_token)
 
     def get_valid_workplace_commute_activities(self, list_of_activities: dict) -> List[dict]:
@@ -58,9 +57,9 @@ class CommuteChallenge:
             start_point_coordinates = activity['start_latlng']
             end_point_coordinates = activity['end_latlng']
 
-            if any([point_is_inside_geofence(start_point_coordinates, self.workplace_coordinates,
+            if any([point_is_inside_geofence(start_point_coordinates, self.place_coordinates,
                                              self.tolerance_radius),
-                    point_is_inside_geofence(end_point_coordinates, self.workplace_coordinates,
+                    point_is_inside_geofence(end_point_coordinates, self.place_coordinates,
                                              self.tolerance_radius)]):
                 commute_activities.append(activity)
 
