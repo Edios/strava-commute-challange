@@ -26,12 +26,13 @@ cd commute-challenge-app
 pip install -r requirements.txt
 
 3. Create a `.env` file in the root directory with the following environment variables:
+`
 CLIENT_ID=your_strava_client_id
 CLIENT_SECRET=your_strava_client_secret
 WORKPLACE_COORDINATES=latitude,longitude
 TOLERANCE_RADIUS=radius_in_meters
 PROXIES={‘http’: ‘http://your_proxy’, ‘https’: ‘https://your_proxy’} # Optional- can be removed from app.py
-
+`
 ## Usage
 
 1. Start the Flask application:
