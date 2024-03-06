@@ -1,4 +1,5 @@
 from typing import List
+from dataclasses import dataclass
 
 from geofence import point_is_inside_geofence
 from web_requests_utils import send_get_request_with_bearer_auth
@@ -59,12 +60,37 @@ class CommuteChallenge:
 
         return commute_activities
 
-    @staticmethod
-    def sum_up_activities_distance(list_of_activities: List[dict]) -> float:
+@dataclass
+class CommuteStatistics:
+    activities: List
+    target_distance: int = 250
+    total_kilometers: float = 0
+    kilometers_to_ride: float = 0
+    rides_done: int = 0
+    time_spent: str = '0 hours'
+    
+    def __post_init__(self):
+        if self.activities:
+            self.total_kilometers=self.sum_up_activities_distance()
+            self.kilometers_to_ride = max(0, self.target_distance - self.total_kilometers)
+            self.rides_done = len(self.activities)
+            self.time_spent = self.sum_up_activities_time_in_hours()
+    
+    def sum_up_activities_distance(self) -> float:
         """
         Sum up all 'distance' fields value in list of activities.
-        :param list_of_activities: List of strava activities based on strava api schema
         :return: Return sum of distance in kilometers
         """
-        total_distance_meters = sum(single_activity['distance'] for single_activity in list_of_activities)
+        total_distance_meters = sum(single_activity['distance'] for single_activity in self.activities)
         return round(total_distance_meters / 1000, 1)
+    
+    def sum_up_activities_time_in_hours(self) -> float:
+        """
+        Sum up all 'elapsed_time' fields value in list of activities.
+        :return: Return sum of moving in hours
+        """
+        def convert_seconds_to_hours(seconds:int) -> float:
+            return round(seconds / 3600,2)
+        
+        total_activities_time_in_minutes = sum(single_activity['elapsed_time'] for single_activity in self.activities)
+        return convert_seconds_to_hours(total_activities_time_in_minutes)

@@ -1,5 +1,47 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-  <h1>Total kilometers: {{ sum_of_kilometers }}</h1>
+  <div class="container mt-5">
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <h4>Total kilometers done:</h4>
+            <p>{{commute_statistics.total_kilometers}} kilometers</p>
+        </div>
+        <div class="col-md-3">
+            <h4>Still need to ride:</h4>
+            <p><p>{{commute_statistics.kilometers_to_ride}} kilometers</p></p>
+        </div>
+        <div class="col-md-3">
+            <h4>Rides done:</h4>
+            <p>{{commute_statistics.rides_done}}</p>
+        </div>
+        <div class="col-md-3">
+            <h4>Time spent on bike:</h4>
+            <p>{{commute_statistics.time_spent}} hours</p>
+        </div>
+    </div>
+    
+    <hr>
+
+    <table class="table table-striped text-center">
+        <thead>
+            <tr>
+                <th>Kilometers</th>
+                <th>Time (minutes)</th>
+                <th>Elevation gain</th>
+                <th>Link to activity</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for activity in commute_statistics.activities %}
+            <tr>
+                <td>{{ '%.2f' | format(activity['distance'] / 1000) }} km</td>
+                <td>{{ (activity['moving_time'] / 60) | round(2) }}</td>
+                <td>{{ activity['total_elevation_gain'] }} meters</td>
+                <td><a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">View Activity</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

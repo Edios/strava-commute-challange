@@ -5,7 +5,7 @@ from flask import Flask, session, render_template, request, redirect, url_for
 
 from dotenv import load_dotenv
 
-from commute_challenge import CommuteChallenge
+from commute_challenge import CommuteChallenge,CommuteStatistics
 from strava_auth import get_authorization_link, StravaClientData
 
 def parse_envirorment_variable_coordinates_to_tuple(envirorment_variable:str) -> tuple:
@@ -49,9 +49,18 @@ def application():
     print(f"All fetched activities {all_activities}")
     valid_commute_activities = commute_challenge.get_valid_workplace_commute_activities(all_activities)
     print(f"Filtred out activities {valid_commute_activities}")
-    sum_of_kilometers = commute_challenge.sum_up_activities_distance(valid_commute_activities)
-    print(f"Sum of kilometers {sum_of_kilometers}")
-    return render_template("application.html", sum_of_kilometers=sum_of_kilometers)
+    commute_statistics = CommuteStatistics(activities=valid_commute_activities,target_distance = 250)
+    #sum_of_kilometers = commute_challenge.sum_up_activities_distance(valid_commute_activities)
+    #print(f"Sum of kilometers {sum_of_kilometers}")
+    if commute_statistics.activities:
+        return render_template("application.html", commute_statistics=commute_statistics)
+    else:
+        return render_template("no_activity_registred.html")
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session["code"] = None
+    return redirect("/authorize")
 
 @app.route("/authorize", methods=["GET"])
 def authorization_init():
