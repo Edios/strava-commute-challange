@@ -1,14 +1,3 @@
-# strava-commute-challange
-WIP
-
-.env needed variables:
-CLIENT_ID=
-CLIENT_SECRET=
-WORKPLACE_COORDINATES=
-
-Dates configured in app
-
-
 # Commute Challenge Application
 
 This Flask application integrates with the Strava API to track and validate commute activities for a challenge. It calculates the sum of kilometers commuted to a workplace within a specified challenge period.
@@ -31,7 +20,6 @@ This Flask application integrates with the Strava API to track and validate comm
 
 1. Clone the repository:
 git clone https://github.com/Edios/strava-commute-challange
-
 cd commute-challenge-app
 
 2. Install the required Python packages:
