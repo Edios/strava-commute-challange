@@ -24,9 +24,11 @@ class StravaClientData:
     """
     client_id: str
     client_secret: str
+    proxies: Union[None, dict] = None
     code: Union[None, str] = None
     access_token: str = field(init=False)
     refresh_token: Union[None, str] = None
+   
     url: str = "https://www.strava.com/oauth/token"
 
     def __str__(self):
@@ -46,7 +48,7 @@ class StravaClientData:
             'grant_type': 'authorization_code'
         }
         # TODO: Add checking for error in message
-        response = send_post_request(self.url, data)
+        response = send_post_request(self.url, data, self.proxies)
         self.refresh_token = response['refresh_token']
 
     def generate_access_token(self):
@@ -58,5 +60,5 @@ class StravaClientData:
             "f": "json"
         }
         # TODO: Add checking for error in message
-        response = send_post_request(self.url, data)
+        response = send_post_request(self.url, data, self.proxies)
         self.access_token = response['access_token']

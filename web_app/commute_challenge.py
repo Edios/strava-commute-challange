@@ -8,9 +8,10 @@ class CommuteChallenge:
     place_coordinates: tuple
     tolerance_radius: int
 
-    def __init__(self,place_coordinates,tolerance_radius):
+    def __init__(self,place_coordinates,tolerance_radius,proxies=None):
         self.place_coordinates = place_coordinates
         self.tolerance_radius = tolerance_radius
+        self.proxies=proxies
 
     @staticmethod
     def get_activities_url(**kwargs) -> str:
@@ -34,15 +35,8 @@ class CommuteChallenge:
         :param kwargs: Parameters for activities API URL
         :return:
         """
-        # TODO: Change for timestamps for activity when it will be launched
-        # start_date = datetime(2024, 3, 1).timestamp()
-        # finish_date = datetime(2024, 6, 30).timestamp()
-        # TODO: Remove debug dates
-        # start_date = datetime(2024, 3, 1).timestamp()
-        # finish_date = datetime(2024, 6, 1).timestamp()
-
         url = self.get_activities_url(per_page=200, **kwargs)
-        return send_get_request_with_bearer_auth(url, strava_access_token)
+        return send_get_request_with_bearer_auth(url, strava_access_token,self.proxies)
 
     def get_valid_workplace_commute_activities(self, list_of_activities: dict) -> List[dict]:
         """
@@ -51,7 +45,7 @@ class CommuteChallenge:
         :return: List of filtered out activities (matching criteria)
         """
         commute_activities = []
-
+        bike_activities_sport_type = ["Ride", "EBikeRide", "EMountainBikeRide", "GravelRide", "MountainBikeRide"]
         for activity in list_of_activities:
 
             start_point_coordinates = activity['start_latlng']
@@ -60,7 +54,7 @@ class CommuteChallenge:
             if any([point_is_inside_geofence(start_point_coordinates, self.place_coordinates,
                                              self.tolerance_radius),
                     point_is_inside_geofence(end_point_coordinates, self.place_coordinates,
-                                             self.tolerance_radius)]):
+                                             self.tolerance_radius)]) and activity['sport_type'] in bike_activities_sport_type:
                 commute_activities.append(activity)
 
         return commute_activities

@@ -10,12 +10,11 @@ class BearerToken(requests.auth.AuthBase):
         r.headers["authorization"] = f"Bearer {self.token}"
         return r
 
-
-def send_get_request_with_bearer_auth(url: str, bearer_token: str) -> dict:
-    response = requests.get(url, auth=BearerToken(bearer_token))
+def send_get_request_with_bearer_auth(url: str, bearer_token: str, proxies:dict) -> dict:
+    response = requests.get(url, auth=BearerToken(bearer_token),proxies=proxies)
     return response.json()
 
 
-def send_post_request(url: str, data: dict) -> dict:
-    response = requests.post(url, data)
+def send_post_request(url: str, data: dict, proxies:dict) -> dict:
+    response = requests.post(url, data, proxies=proxies)
     return response.json()
