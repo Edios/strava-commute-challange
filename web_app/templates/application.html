@@ -29,6 +29,7 @@
                 <th>Kilometers</th>
                 <th>Time (minutes)</th>
                 <th>Elevation gain</th>
+                <th>Start date</th>
                 <th>Link to activity</th>
             </tr>
         </thead>
@@ -38,6 +39,7 @@
                 <td>{{ '%.2f' | format(activity['distance'] / 1000) }} km</td>
                 <td>{{ (activity['moving_time'] / 60) | round(2) }}</td>
                 <td>{{ activity['total_elevation_gain'] }} meters</td>
+                <td>{{ activity['start_date_local'] }}</td>
                 <td><a href="https://www.strava.com/activities/{{activity.id}}" target="_blank">View Activity</a></td>
             </tr>
           {% endfor %}
