@@ -41,14 +41,14 @@ def application():
     except KeyError:
         return redirect("/authorize")
 
-    print(f"Generated refresh token {strava_client_data.refresh_token}")
+    #print(f"Generated refresh token {strava_client_data.refresh_token}")
     strava_client_data.generate_access_token()
-    print(f"Generated refresh token {strava_client_data.access_token}")
+    #print(f"Generated refresh token {strava_client_data.access_token}")
     commute_challenge = CommuteChallenge(WORKPLACE_COORDINATES,TOLERANCE_RADIUS,proxies=PROXIES)
     all_activities = commute_challenge.fetch_strava_activities(strava_client_data.access_token, before=CHALLENGE_FINISH_DATE, after=CHALLENGE_START_DATE)
-    print(f"All fetched activities {all_activities}")
+    #print(f"All fetched activities {all_activities}")
     valid_commute_activities = commute_challenge.get_valid_workplace_commute_activities(all_activities)
-    print(f"Filtred out activities {valid_commute_activities}")
+    #print(f"Filtred out activities {valid_commute_activities}")
     commute_statistics = CommuteStatistics(activities=valid_commute_activities,target_distance = 250)
     #sum_of_kilometers = commute_challenge.sum_up_activities_distance(valid_commute_activities)
     #print(f"Sum of kilometers {sum_of_kilometers}")

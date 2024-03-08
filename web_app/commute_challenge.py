@@ -28,7 +28,6 @@ class CommuteChallenge:
         date_time = datetime.strptime(date_to_check, "%Y-%m-%dT%H:%M:%SZ").time()
         after_time = datetime.strptime(after_time, "%H:%M").time()
         before_time = datetime.strptime(before_time, "%H:%M").time()
-        print(date_time,after_time,before_time)
         return after_time < date_time < before_time
     
     @staticmethod
@@ -80,12 +79,11 @@ class CommuteChallenge:
 
             start_point_coordinates = activity['start_latlng']
             end_point_coordinates = activity['end_latlng']
-            activity_date =activity['start_date_local']
+            activity_date = activity['start_date_local']
 
             is_start_point_in_geofence=point_is_inside_geofence(start_point_coordinates, self.place_coordinates,self.tolerance_radius)
             is_end_point_in_geofence=point_is_inside_geofence(end_point_coordinates, self.place_coordinates,self.tolerance_radius)
             if activity['sport_type'] in bike_activities_sport_type and self.is_weekday(activity_date):
-                print("im in first if")
                 # Morning ride
                 if is_end_point_in_geofence and self.is_date_time_between_time_range(activity_date,"00:01","11:59"):
                     commute_activities.append(activity)
